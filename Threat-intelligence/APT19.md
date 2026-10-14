@@ -10,6 +10,7 @@ Tools: custom malware (HTTP and Port 22 variants) plus public tools such as Empi
 
 TTPs (Tactics, Techniques, Procedures)
 > (why, how, how this specific group did it)
+
 Resource Development        T1588.002Obtain Capabilities (Tool)     Obtained and used public tools such as Empire
 Initial Access		        T1566.001 Spearphishing Attachment	    Email with attachments RTF/XLSM containing exploit
 Initial Access		        T1189 Drive-by Compromise		        Watering hole su forbes.com (2014)
