@@ -8,21 +8,22 @@ Targeted sectors: defense, finance, energy, pharmaceutical, telecommunications, 
 Likely motivation: cyber espionage and data theft for economic advantage (inferred by FireEye).
 Tools: custom malware (HTTP and Port 22 variants) plus public tools such as Empire (S0363) and Cobalt Strike (S0154).
 
-TTPs (Tactics, Techniques, Procedures)
 > (why, how, how this specific group did it)
 
-Resource Development        T1588.002Obtain Capabilities (Tool)     Obtained and used public tools such as Empire
-Initial Access		        T1566.001 Spearphishing Attachment	    Email with attachments RTF/XLSM containing exploit
-Initial Access		        T1189 Drive-by Compromise		        Watering hole su forbes.com (2014)
-Execution		            T1059.001 PowerShell		        	payload execution
-Execution		            T1204.002 User Execution		        Needs to open attachment
-Persistence		            T1547.001 Registry Run Keys		        HKCU\...\Run key
-Persistence		            T1543.003 Windows Service		        "Port 22" variant registered as service
-Defense Evasion		        T1218.010 / .011 Regsvr32 / Rundll32	Regsvr32 used to bypass application control; payload injected into rundll32.exe
-Defense Evasion		        T1574.001 DLL Hijacking			        legitimate executable that loads a malicious DLL
-Defense Evasion		        T1027 / T1140 / T1564.003		        Base64, XOR obfuscation, hidden PowerShell windows
-Discovery		            T1082 / T1016 / T1033			        Collection of host, network and user information
-Command & control           T1071.001 + T1132.001		        	HTTP with Base64-encoded data
+| Tactic | Technique | Procedure |
+| :--- | :--- | :--- |
+| Resource Development | T1588.002 Obtain Capabilities: Tool | Obtained and used public tools such as Empire |
+| Initial Access | T1566.001 Spearphishing Attachment | Emails with RTF/XLSM attachments containing exploits |
+| Initial Access | T1189 Drive-by Compromise | Watering hole attack on forbes.com (2014) |
+| Execution | T1059.001 PowerShell | Payload execution |
+| Execution | T1204.002 User Execution | Requires the user to open the attachment |
+| Persistence | T1547.001 Registry Run Keys | `HKCU\...\Run` key |
+| Persistence | T1543.003 Windows Service | "Port 22" variant registered as a service |
+| Defense Evasion | T1218.010 / T1218.011 Regsvr32 / Rundll32 | Regsvr32 used to bypass application control; payload injected into rundll32.exe |
+| Defense Evasion | T1574.001 DLL Hijacking | Legitimate executable loading a malicious DLL |
+| Defense Evasion | T1027 / T1140 / T1564.003 | Base64 and XOR obfuscation; hidden PowerShell windows |
+| Discovery | T1082 / T1016 / T1033 | Collection of host, network and user information |
+| Command and Control | T1071.001 / T1132.001 | HTTP communications with Base64-encoded data |
 
 ## IOCs (Indicators of Compromise) (> 10)
 qui serve ricerca fuori da MITRE. Le fonti da aprire sono quelle nelle References: il blog FireEye del 2017 e il report Unit 42 del 2016. Contengono hash, domini e IP di C2. Puoi aggiungere anche AlienVault OTX o VirusTotal, ma controlla sempre da quale report arriva ogni indicatore e riportalo. Tieni presente che gli IOC di un gruppo del 2014-2017 sono quasi tutti scaduti, quindi indicalo come limite.
