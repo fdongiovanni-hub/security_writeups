@@ -3,9 +3,13 @@
 
 ## Overview
 ID: G0073, Associated Groups: Codoso, C0d0so0, Codoso Team, Sunshop Group
+
 Origin: China-based. FireEye assesses it as freelancers with some degree of government sponsorship. Some analysts consider it the same group as Deep Panda (G0009), but this is unconfirmed.
+
 Targeted sectors: defense, finance, energy, pharmaceutical, telecommunications, high tech, education, manufacturing, legal services.
+
 Likely motivation: cyber espionage and data theft for economic advantage (inferred by FireEye).
+
 Tools: custom malware (HTTP and Port 22 variants) plus public tools such as Empire (S0363) and Cobalt Strike (S0154).
 
 > (why, how, how this specific group did it)
