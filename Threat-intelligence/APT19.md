@@ -15,7 +15,7 @@ Tools: custom malware (HTTP and Port 22 variants) plus public tools such as Empi
 Sources: [1], [6]
 
 ## TTPs (Tactics, Techniques, Procedures)
-> Tactic = why (the attacker's goal); Technique = how; Procedure = how this specific group did it. Source: [6]
+> Tactic = why (the attacker's goal), Technique = how, Procedure = how this specific group did it
 
 | Tactic | Technique | Procedure |
 | :--- | :--- | :--- |
@@ -63,7 +63,7 @@ MD5 and SHA-256: file fingerprints
 -->
 
 > note: values are defanged (`[.]`) so they cannot be clicked by mistake. Most domains and IPs date from 2015–2017 and are probably no longer active; the hashes are still valid for identifying the files.
-> note: checked on VirusTotal on 15 October 2026: the IP `121[.]54[.]168[.]230` is flagged as malicious by 1 of 95 vendors and does not respond to a connection (error), so it appears to be inactive today.
+> note: checked on VirusTotal on 15 October 2026: the IP `121[.]54[.]168[.]230` is flagged as malicious by 1 of 95 vendors and does not respond to a connection (error), so it's inactive today.
 
 ## Vulnerabilities and Exploits
 
