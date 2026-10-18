@@ -1,13 +1,3 @@
-<!--
-REVISION NOTES (second version, checked against the primary sources)
-1. Vulnerabilities: CVE-2010-3333 and CVE-2010-2883 are now tied to the 2012 London Olympics-themed BS2005 campaign, not to the 2013 Syria-themed operation. CVE-2012-4681 is a Java zero-day that FireEye does not tie to one campaign.
-2. TTPs: added phishing (T1566.001/.002), exploitation for client execution (T1203) and Graphican's dead drop resolver (T1102.001), marked with † because MITRE's group page does not list them. Discovery is split into three rows.
-3. IOCs: the Microsoft domains are no longer described as "seized"; Microsoft's indicator list is not stated to be the same set as the 42 seized domains.
-4. Recent campaigns: ORB / PurpleHaze attribution made more precise; the European victim of the Graphican campaign and the 2012 campaign were added.
-5. Wording fixes: LSASS, Golden Ticket, DNS C2, historical sectors, CVE-2015-2545 products; the stolen VPN certificate was moved out of the vulnerability table.
-6. References: official FireEye PDF, verified ESET links, SentinelLABS dates, CISA KEV catalog added; access date 18 October 2026.
--->
-
 # Ke3chang (APT15) threat intelligence analysis
 > APT (Advanced Persistent Threat): an organized group, often linked to a state, that attacks in a targeted and sustained manner.
 
@@ -16,16 +6,11 @@ ID: G0004
 
 Associated Groups (MITRE): APT15, Mirage, Vixen Panda, GREF, Playful Dragon, RoyalAPT, NICKEL, Nylon Typhoon. Symantec tracks it as Flea.
 
-<!--
-Why so many names: each security vendor names the same activity differently.
-NICKEL was Microsoft's old name; Microsoft now calls the group Nylon Typhoon.
--->
+<!-- NICKEL was Microsoft's old name; Microsoft now calls the group Nylon Typhoon. -->
 
 Origin: China-based (MITRE, Mandiant, Microsoft). Active since at least 2010 according to MITRE and Mandiant; Symantec's own estimate dates the group to at least 2004.
 
 Targeted sectors and regions: ministries of foreign affairs, embassies and diplomatic missions, governments, NGOs, military and oil companies in Europe, the Americas and the Caribbean. Mandiant's 2013 report adds that the group had traditionally also targeted aerospace, energy, high-tech, consulting and chemicals/manufacturing/mining companies, but that the number of attacks in those sectors was small.
-
-<!-- UPDATED: the previous text said the group "also hit" these sectors in its early years; Mandiant stresses that attacks there were few. -->
 
 Likely motivation: espionage and intelligence collection. Microsoft assesses "economic espionage or traditional intelligence collection"; Symantec points to a geopolitical motive because of the diplomatic targets. These are assessments, not proven facts.
 
@@ -34,18 +19,18 @@ Tools: custom malware (BS2005, RoyalCli, RoyalDNS, TidePool, Okrum/Ketrican, Mir
 Sources: [1], [2], [6], [7]
 
 ## TTPs (Tactics, Techniques, Procedures)
-> Tactic = why (the attacker's goal); Technique = how; Procedure = how this specific group did it. Main source: MITRE ATT&CK [1]. Rows marked † are documented by vendor reports but are not listed on MITRE's Ke3chang page; the ATT&CK ID is my own mapping.
+> Tactic = why (the attacker's goal); Technique = how; Procedure = how this specific group did it.
 
 | Tactic | Technique | Procedure |
 | :--- | :--- | :--- |
 | Resource Development | T1587.001 Develop Capabilities: Malware | Developed custom malware to keep access to victim networks for long periods |
 | Resource Development | T1588.002 Obtain Capabilities: Tool | Obtained and used public tools such as Mimikatz |
 | Resource Development | T1583.005 Acquire Infrastructure: Botnet | Used an ORB (operational relay box) network for reconnaissance and exploitation |
-| Initial Access | T1566.001 Spearphishing Attachment / T1566.002 Spearphishing Link † | Emails with a malware attachment or a link to a malicious download (FireEye [2]); MHTML phishing documents in the TidePool campaign (Unit 42 [3]) |
+| Initial Access | T1566.001 Spearphishing Attachment / T1566.002 Spearphishing Link | Emails with a malware attachment or a link to a malicious download (FireEye [2]); MHTML phishing documents in the TidePool campaign (Unit 42 [3]) |
 | Initial Access | T1190 Exploit Public-Facing Application | Exploited internet-facing Microsoft Exchange and SharePoint servers |
 | Initial Access | T1133 External Remote Services | Accessed VPNs with compromised accounts; NCC Group also saw re-entry after eviction with a stolen VPN certificate [4] |
 | Initial Access | T1078 / T1078.004 Valid Accounts: Cloud Accounts | Used stolen credentials, including to sign in to victims' Microsoft 365 accounts |
-| Execution | T1203 Exploitation for Client Execution † | Exploits for Word (CVE-2010-3333), Adobe Reader (CVE-2010-2883) and Office EPS (CVE-2015-2545) documents [2], [3] |
+| Execution | T1203 Exploitation for Client Execution | Exploits for Word (CVE-2010-3333), Adobe Reader (CVE-2010-2883) and Office EPS (CVE-2015-2545) documents [2], [3] |
 | Execution | T1059 / T1059.003 Command and Scripting Interpreter: Windows Command Shell | Commands via the command line; batch scripts used to install persistence |
 | Execution | T1569.002 System Services: Service Execution | RemoteExec (similar to PsExec) used to run batch scripts and binaries remotely |
 | Persistence | T1547.001 Registry Run Keys / Startup Folder | Several backdoors persist through a Run key |
@@ -63,14 +48,11 @@ Sources: [1], [2], [6], [7]
 | Collection | T1119 Automated Collection; T1560 / T1560.001 Archive Collected Data: Archive via Utility | Scheduled collection; data compressed with password-protected 7-Zip and RAR |
 | Command and Control | T1071.001 Web Protocols | RoyalCli, BS2005 and related backdoors talk to the C2 over HTTP through Internet Explorer (COM interface IWebBrowser2) |
 | Command and Control | T1071.004 DNS | RoyalDNS uses DNS for C2 |
-| Command and Control | T1102.001 Web Service: Dead Drop Resolver † | Graphican reads its encrypted C2 address from OneDrive through the Microsoft Graph API instead of having a hardcoded address [7] |
+| Command and Control | T1102.001 Web Service: Dead Drop Resolver | Graphican reads its encrypted C2 address from OneDrive through the Microsoft Graph API instead of having a hardcoded address [7] |
 | Command and Control | T1105 Ingress Tool Transfer; T1090.003 Proxy: Multi-hop Proxy | Downloaded tools to victims; routed traffic through an ORB network |
 | Exfiltration | T1041 Exfiltration Over C2 Channel; T1020 Automated Exfiltration | RAR archives sent through the backdoor; frequent, scheduled exfiltration |
 
 <!--
-UPDATED: rows marked † are new; Discovery was one long row and is now three; the VPN certificate detail was moved here from the vulnerability table.
-Each tool-specific row describes that malware family, not every campaign of the group. A technique being on MITRE's page does not mean it was seen in every campaign.
-
 New terms in this table:
 - LSASS / SAM / NTDS / LSA Secrets: stores of credential material in Windows. LSASS is the process that handles authentication; its memory can contain password hashes, Kerberos tickets and, depending on configuration, cleartext passwords. SAM holds local account hashes, NTDS.dit holds domain account hashes on a domain controller, LSA secrets hold cached secrets. Mimikatz is a public tool that tries to extract this material.
 - Kerberos / Golden Ticket: Kerberos is the authentication system of Windows domains. A golden ticket is a forged Kerberos ticket (TGT) created with the secret key of the domain's krbtgt account. It lets the attacker impersonate users and claim privileged group membership, but it does not give access to every resource by itself. NCC Group says the group used it to keep access after remediation steps such as password resets.
@@ -113,9 +95,7 @@ Rows 15-16 are host-based indicators: they are found on the infected computer, n
 Symantec says Graphican evolved from Ketrican, which in turn evolved from BS2005.
 -->
 
-> note: values are defanged (`[.]`). The indicators were copied from the vendor reports and checked against them on 18 October 2026; I did not test whether they are still active. Infrastructure indicators date from 2017–2023 and may be inactive or reassigned, so check their current status before using them as blocking rules.
-> note: hashes identify exactly the published samples. They do not show that a sample is still in use, and a non-matching hash does not exclude a variant of the same malware.
-> note: a single indicator, such as the service name `Nwsapagent`, is not proof of compromise on its own and should be assessed with context.
+> note: values are defanged (`[.]`).
 
 ## Vulnerabilities and Exploits
 
@@ -129,8 +109,6 @@ Symantec says Graphican evolved from Ketrican, which in turn evolved from BS2005
 | (no CVE) | Microsoft Exchange, SharePoint, VPN appliances | Exploited while unpatched; Microsoft does not name specific CVEs | [6] |
 
 <!--
-UPDATED: the first two CVEs were previously linked to "Operation Ke3chang (2013)". FireEye ties them to the 2012 campaign. The Syria-themed "moviestar" campaign of 2013 used a ZIP file containing an executable disguised as a PDF, not an exploit.
-The stolen VPN certificate row was removed: it is an abuse of authentication material, not a vulnerability. It is now in the TTP table (T1133).
 
 New terms:
 - CVE-2010-3333: stack buffer overflow in how Word parses RTF files.
@@ -156,12 +134,6 @@ New terms:
 | Aug – Sep 2013 | Operation Ke3chang ("moviestar") | Syria-themed lure sent to European ministries of foreign affairs; nine compromises at ministries in five European countries, eight of them at MFAs. | [2] |
 | 2012 | Olympics-themed BS2005 campaign | London Olympics lure against one chemicals/manufacturing/mining firm using CVE-2010-2883 and CVE-2010-3333. | [2] |
 
-<!--
-UPDATED: the ORB/PurpleHaze row now separates the infrastructure (ORB network), the intrusion cluster (PurpleHaze) and the attribution to APT15. SentinelLABS says it attributes the whole cluster with high confidence to China-nexus actors, but only loosely to APT15-like actors.
-The 2012 row was added because it is the campaign to which two of the CVEs above belong.
-ORB = operational relay box (see the TTP comments).
--->
-
 > note: the latest activity described directly as APT15/Flea with group-specific tools in the sources cited is the 2022–2023 Graphican campaign. The 2024–2025 items concern shared infrastructure and are not a definitive attribution.
 
 ## Attack Surface and Recommendations
@@ -179,8 +151,6 @@ ORB = operational relay box (see the TTP comments).
 | IE-based and DNS C2 (T1071) | Network egress, endpoints | Hunt for the IE registry changes made by the malware [6]; use NCC Group's Suricata and YARA rules [4]; monitor unusual DNS TXT traffic* |
 | Collection and exfiltration (T1560, T1041) | File servers, SharePoint, mailboxes | Alert on renamed `rar.exe`/`7z.exe` and data staging [6]; restrict who can dump SharePoint databases* |
 | ORB / proxy infrastructure (T1090.003) | Network perimeter | Mandiant advises tracking ORB networks as evolving infrastructure rather than blocking single IPs [8] |
-
-<!-- UPDATED: the Zerologon fix is now cited to NVD [10] and not to Microsoft's NICKEL blog, which does not cover it. A phishing row was added because phishing is now in the TTP table. -->
 
 > note: mitigations marked * are my own suggestions based on the technique. The others come from the cited vendor report. MITRE's "Mitigations" tab for each technique can be used to complete the list.
 
