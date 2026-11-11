@@ -15,37 +15,37 @@ jq -r '.[].name_value' crt_all.json | tr 'A-Z' 'a-z' | sort -u > evidence/crt_un
 127 unique names, 72 explicit hosts (no wildcards like *.int.vinted.com)
 
 ### What the names suggests
-### Internal Tools
-This category groups the platforms used by engineering teams to manage infrastructure, visualize data, and secure credentials. The `.int` suffix confirms that access is restricted to the private corporate network.
-* **`://vinted.com`**: Hosts *HashiCorp Vault*, a centralized system for securely managing passwords, API keys, TLS certificates, and deep corporate secrets.
-* **`://vinted.com`**: An analytics and monitoring platform that connects to internal databases to generate graphical dashboards and visualize metrics in real time.
-* **`://vinted.com`**: Acts as the *Source of Truth* for network inventory, handling IP address allocation (IPAM) and the physical mapping of servers within data centers (DCIM).
+**Internal Tools**
+This category groups the platforms used by engineering teams to manage infrastructure, visualize data, and secure credentials. The .int suffix confirms that access is restricted to the private corporate network.
+* **`vault . int . vinted . com`**: Hosts *HashiCorp Vault*, a centralized system for securely managing passwords, API keys, TLS certificates, and deep corporate secrets.
+* **`grafana . int . vinted . com`**: An analytics and monitoring platform that connects to internal databases to generate graphical dashboards and visualize metrics in real time.
+* **`netbox . int . vinted . com`**: Acts as the *Source of Truth* for network inventory, handling IP address allocation (IPAM) and the physical mapping of servers within data centers (DCIM).
 
-### Kubernetes Clusters
-Domains ending in `.k8s` identify clusters running *Kubernetes*, the orchestration system used to deploy applications across hundreds of servers. Their prefixes reveal their importance and physical locations around the globe.
-* **`://vinted.com`**: The main **Production** (`prod`) cluster, located in the Amsterdam data center number 1 (`ams1`). This is the absolute heart of the live Vinted application.
-* **`://vinted.com`**: A **Test/Sandbox** cluster located in the Brussels data center (`bru1`), used for isolated staging experiments without the risk of breaking the live website.
-* **`://vinted.com`**: Identifies an automated infrastructure configuration server (*Chef*) located in a Dallas data center (`dal1`), proving the company's trans-atlantic server presence.
+**Kubernetes Clusters**
+Domains ending in .k8s identify clusters running *Kubernetes*, the orchestration system used to deploy applications across hundreds of servers. Their prefixes reveal their importance and physical locations around the globe.
+* **`ams1coreprod1 . k8s . vinted . com`**: The main **Production** (`prod`) cluster, located in the Amsterdam data center number 1 (`ams1`). This is the absolute heart of the live Vinted application.
+* **`bru1sandbox1 . k8s . vinted . com`**: A **Test/Sandbox** cluster located in the Brussels data center (`bru1`), used for isolated staging experiments without the risk of breaking the live website.
+* **`chef-dal1 . int . vinted . com`**: Identifies an automated infrastructure configuration server (*Chef*) located in a Dallas data center (`dal1`), proving the company's trans-atlantic server presence.
 
-### Non-Production Testing Environments
+**Non-Production Testing Environments**
 Development teams utilize these isolated environments to test code changes, UI layouts, or new business logic before pushing them to production, mitigating risks to the final user base.
-* **`://vinted.com`**: A testing environment built specifically for logistics, postage calculations, and testing third-party courier APIs (such as DHL or UPS).
-* **`://vinted.com`**: A highly experimental, free-roam space for developers to test raw microservice code. The `.svc` extension shows this is mapped for internal cluster-only routing.
-* **`://vinted.com`**: The non-production repository for static web assets (images, stylesheets) tied to the internal Customer Support (CS) administration tools.
+* **`shipping-sandbox . vinted . com`**: A testing environment built specifically for logistics, postage calculations, and testing third-party courier APIs (such as DHL or UPS).
+* **`application-playground . svc . vinted . com`**: A highly experimental, free-roam space for developers to test raw microservice code. The .svc extension shows this is mapped for internal cluster-only routing.
+* **`cs-tool-web-assets-sandbox . vinted . com`**: The non-production repository for static web assets (images, stylesheets) tied to the internal Customer Support (CS) administration tools.
 
-### Artificial Intelligence & Emerging Tech
+**Artificial Intelligence & Emerging Tech**
 Subdomains dedicated to training, building, and deploying internal Artificial Intelligence models and virtual assistant frameworks.
-* **`://vinted.com`**: Represents a *Proof of Concept* (POC), meaning a functional prototype tied to an internal AI model named "Bloom".
-* **`://vinted.com`**: A cluster service instance likely hosting an automated customer or internal assistant (`v-assist`) leveraging the *Model Context Protocol* (`mcp`) to safely plug AI into local corporate data.
+* **`app . bloom-ai-poc . svc . vinted . com`**: Represents a *Proof of Concept* (POC), meaning a functional prototype tied to an internal AI model named "Bloom".
+* **`v-assist-mcp . svc . vinted . com`**: A cluster service instance likely hosting an automated customer or internal assistant (`v-assist`) leveraging the *Model Context Protocol* (`mcp`) to safely plug AI into local corporate data.
 
-### Public Gateways & Entry Points
+**Public Gateways & Entry Points**
 These entry points serve as the outer perimeter of the infrastructure where real internet users land. They filter, cache, and proxy global web requests down to internal backend systems.
-* **`://vinted.com`**: The public-facing entry point (*Edge*) for Vinted APIs, managing and accelerating incoming client requests originating from mobile apps and browsers worldwide.
-* **`://vinted.com`**: The primary public web asset, representing the main user-facing homepage utilized by millions of online shoppers daily.
+* **`api . edge . vinted . com`**: The public-facing entry point (*Edge*) for Vinted APIs, managing and accelerating incoming client requests originating from mobile apps and browsers worldwide.
+* **`www . vinted . com`**: The primary public web asset, representing the main user-facing homepage utilized by millions of online shoppers daily.
 
 ---
 
-### Technical Limitations of the Data
+**Technical Limitations of the Data**
 Data collected via *Certificate Transparency Logs* (like crt.sh) possesses specific structural boundaries that an analyst must keep in mind to prevent false assumptions:
 * **Output Truncation**: Public CT log aggregators like crt.sh enforce limit caps on large query results, meaning older or lower-priority hosts may be missing due to a truncated list.
 * **Expired Filter Blinds**: If an analysis strictly looks at active configurations, any domains attached to older decommissioned servers or unrenewed certificates disappear from view entirely.
