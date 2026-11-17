@@ -6,19 +6,15 @@ Target: vinted.com. The domains vinted.lt, vinted.it and vinted.fr are used only
 
 All observations were made between 2026-11-13 and 2026-11-15, from ubuntu WSL, using only third-party sources: crt.sh, public DNS resolvers (1.1.1.1 and 8.8.8.8), bgp.he.net, Shodan, the Wayback Machine, Vinted's public careers page, GitHub and news sites. Public web pages were opened normally in a browser.
 
-Not done: no scanning, no brute forcing, no logins, no contact with employees or users. I did not visit any host or IP I found. Shodan and Wayback were used only to read data they had already stored.
-
 ## Target and tools
 
-**Target.** Vinted is a European online marketplace for second-hand goods, founded in 2008 in Lithuania, with headquarters in Vilnius. According to its job ads, the group has three business units (Marketplace, Go for shipping, Pay for payments), operates in 20+ markets and has over 2,000 employees, with offices in Vilnius and Kaunas and a warehouse in Hamburg. It is a large international company, which the assignment allows. I chose it because it has a visible technical footprint (certificates, DNS, public repositories) that one person can analyse, and because I know the local context. I did not investigate acquisitions or subsidiaries.
+Target: Vinted is a European online marketplace for second-hand goods, founded in 2008 in Lithuania, with headquarters in Vilnius. It's a large international company. I chose it because it has a visible technical footprint (certificates, DNS, public repositories) that one person can analyse, and because I know the local context.
 
-**Tools** (all passive): crt.sh, `whois`, `dig` (public resolvers 1.1.1.1 and 8.8.8.8, a normal DNS query that is considered passive), bgp.he.net, Shodan, the Wayback Machine, GitHub and news sites.
-
-**Not used because they are active:** port scanners, subdomain brute forcing, SSL Labs and any tool that connects to Vinted's servers.
+Tools (passive): crt.sh, whois, dig (public resolvers 1.1.1.1 and 8.8.8.8, a normal DNS query that is considered passive), bgp.he.net, Shodan, the Wayback Machine, GitHub and news sites.
 
 ## 1. Subdomains from Certificate Transparency
 
-Certificate Transparency (CT) logs are public records of TLS certificates. Each certificate lists the hostnames it covers, so the names can be read without touching the company. I searched crt.sh for `%.vinted.com` (`%` = any prefix), expired certificates excluded.
+I searched crt.sh for `%.vinted.com`, expired certificates excluded.
 
 ```
 curl -s "https://crt.sh/?q=%25.vinted.com&exclude=expired&output=json" -o crt_all.json
@@ -26,20 +22,20 @@ jq -r '.[].name_value' crt_all.json | tr 'A-Z' 'a-z' | sort -u
 ```
 
 **Data**
-- 127 unique names: 57 wildcards (e.g. `*.int.vinted.com`), 69 explicit hostnames (Appendix A) and one entry from a third-party domain (sslip.io) that I removed.
+- 127 unique names: 57 wildcards (ex `*.int.vinted.com`), 69 explicit hostnames (Appendix A) and one entry from a third-party domain (sslip.io) that I removed.
 
 Screenshots: 01_crtsh_results, 02_terminal_crt_counts
 
 **What the names suggest** (guesses from the names only, not confirmed)
 - Internal tools: `vault.int`, `grafana.int`, `netbox.int`, `chef-dal1.int`. Looks like a secrets manager, monitoring, network inventory and configuration management. `int` may mean internal.
-- Kubernetes: `k8s.vinted.com` and wildcards like `*.ingress.ams1coreprod1.k8s.vinted.com`. Clusters seem split by location (`ams1`, `bru1`, `dal1`, `dus1`, maybe data centres) and by prod/sandbox.
+- Kubernetes: `k8s.vinted.com` and wildcards like `*.ingress.ams1coreprod1.k8s.vinted.com`. Clusters split by location (`ams1`, `bru1`, `dal1`, `dus1`, maybe data centres) and by prod/sandbox.
 - Test environments: `application-playground.svc`, `stage-aim-marketplace`, `cs-tool-web-assets-sandbox`.
 - Identity: `atlantis-okta.svc`, suggests Okta.
 - AI projects: `app.bloom-ai-poc.svc`, `v-assist-mcp.svc`, `mcp-gateway-connectors.svc`.
 
 ## 2. WHOIS
 
-`whois` on each domain. Personal data removed. The output format differs between registries, so I collected the fields by hand.
+`whois` on each domain. The output format differs between registries, so I collected the fields by hand.
 
 **Data**
 - Registrar: INWX GmbH for all four domains.
@@ -47,7 +43,7 @@ Screenshots: 01_crtsh_results, 02_terminal_crt_counts
 - Name servers: four awsdns hosts for each domain.
 - DNSSEC: unsigned on vinted.com, signed on vinted.it, not shown for .lt and .fr.
 
-**What it suggests:** DNS seems hosted on Amazon Route 53 (inferred from the names). Registrar and DNS provider are different companies. The setup is consistent, except for DNSSEC.
+**What it suggests:** DNS seems hosted on Amazon Route 53 (inferred from the names). Registrar and DNS provider are different companies. The setup is consistent except for DNSSEC.
 
 ## 3. Email and DNS
 
@@ -67,13 +63,13 @@ done
 - MX: Google.
 - SPF: strict (`-all`), includes Amazon SES, Google and the same four IP ranges. vinted.com also includes Atlassian, MailerLite and ServiceNow, vinted.lt includes `_spf.zdsys.com`.
 - DMARC: `p=quarantine`, `pct=100`, reports sent to a vinted.com mailbox.
-- vinted.com has about 20 domain-verification TXT records, for example for Atlassian, Jamf, Jumio, HubSpot, OneTrust, ServiceNow, OpenAI and Anthropic. The other domains have a few (Google, Apple, Zoom, Microsoft).
+- vinted.com has about 20 domain-verification TXT records, ex. for Atlassian, Jamf, Jumio, HubSpot, OneTrust, ServiceNow, OpenAI and Anthropic. The other domains have a few (Google, Apple, Zoom, Microsoft).
 
 Screenshot: 03_terminal_dns_email
 
 **What it suggests**
-- Mail seems to run on Google Workspace.
-- The configuration is strict and consistent, so direct spoofing of these domains should be hard. DMARC is not `reject`, the strictest setting.
+- Mail seems to run on Google Workspace
+- The configuration is strict, so direct spoofing of these domains should be hard. DMARC is not `reject`, the strictest setting.
 - DKIM was not checked: finding its selectors would need guessing.
 
 ## 4. IP and hosting
@@ -132,7 +128,7 @@ None of these incidents concerns the infrastructure seen in this reconnaissance.
 
 ### Finding 1: internal hostnames and tech stack visible in CT logs
 
-**What the attacker learns:** names of internal tools, a Kubernetes setup split by location and environment, test environments, the identity provider and AI projects. All from public logs.
+**What the attacker learns:** names of internal tools, a Kubernetes setup split by location and environment, test environments, the identity provider and AI projects.
 
 **Why it matters:** it is a map of the company's technology, useful for convincing phishing (e.g. pretending to be IT) and for choosing what to research for vulnerabilities.
 
@@ -146,7 +142,7 @@ None of these incidents concerns the infrastructure seen in this reconnaissance.
 
 ### Finding 2: third-party services listed in DNS TXT records
 
-**What the attacker learns:** the TXT records of vinted.com list external services the company has verified a domain with (e.g. Jumio, Jamf, HubSpot, ServiceNow). What each is used for is inferred from its name.
+**What the attacker learns:** the TXT records of vinted.com list external services the company has verified a domain with (e.g. Jumio, Jamf, HubSpot, ServiceNow). inferred from its name.
 
 **Why it matters:** it gives an attacker a list of vendors to impersonate in phishing and of third parties whose compromise could affect Vinted.
 
@@ -162,7 +158,7 @@ None of these incidents concerns the infrastructure seen in this reconnaissance.
 
 **What the attacker learns:** `artefact-storage.svc.vinted.com` (also named `nexus.vinted.net`) answers on four Vinted IPs in Germany, the Netherlands and Lithuania. It appears in both CT logs and Shodan, so the two sources agree. The word "nexus" is often a software package repository, but this is a guess from the name.
 
-**Why it matters:** a place that stores software builds or packages is attractive, and the attacker now knows exactly where it is. If it were weakly protected, it could leak internal software or allow tampering with what the build systems use.
+**Why it matters:** a place that stores software builds or packages could be attractive, and the attacker now knows exactly where it is. If it were weakly protected, it could leak internal software or allow tampering with what the build systems use.
 
 **Prerequisite:** Shodan shows only a redirect and a `403 Forbidden`, so I do not know what the host serves or whether it needs a login. The attacker would need a weakness, such as missing authentication, an unpatched bug or stolen credentials. I did not test any of this, because it would be active reconnaissance.
 
@@ -184,15 +180,11 @@ None of these incidents concerns the infrastructure seen in this reconnaissance.
 
 Without touching Vinted, an attacker can learn a lot about how the company is built. Certificates and DNS reveal the names of internal tools, test environments and AI projects, and the DNS records list many third-party services. Job ads and GitHub confirm the technology stack, and Shodan shows that one internal-looking service is reachable from the Internet. The email setup is strict and consistent, and the main website and API sit behind CDNs, so the directly visible surface is small (4 of 36 Shodan results are on Vinted's own network). Nothing found gives access by itself, but it makes phishing and later attacks easier to prepare. The most important point to check, by the company itself, is the reachable artefact service.
 
-I did not do anything active: no scanning, no brute forcing, no SSL Labs test, no visits to the hosts found and no guessing of DKIM selectors.
-
 ## Limits of this work
 
 - Everything comes from public third-party sources observed between 2026-11-13 and 2026-11-15 (Shodan entries are from 2026-10-24 to 2026-11-14), so results may be incomplete or outdated.
 - Wildcard certificates hide real hostnames, crt.sh was searched only for vinted.com, and a name in CT logs does not show that a host is reachable.
 - Interpretations of names, DNS records and ASNs are inferences, not verified facts.
-- Not checked: origin servers behind the CDNs, DKIM, and anything that needs active probing.
-- Incident information comes from news articles and regulator pages and was not verified independently.
 
 ## Evidence
 
