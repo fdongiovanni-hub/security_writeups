@@ -1,0 +1,21 @@
+# Nmap 7.94SVN scan initiated Thu Nov 19 17:11:58 2026 as: nmap -sC -sV -oN scan.txt 10.114.136.102
+Nmap scan report for 10.114.136.102
+Host is up (0.039s latency).
+Not shown: 998 closed tcp ports (conn-refused)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.13 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 1f:56:a9:b5:cb:d1:a5:5e:99:02:22:8a:7e:1d:f6:be (RSA)
+|   256 7c:ad:98:66:2c:d3:6a:7b:9a:d2:21:d7:81:46:5c:88 (ECDSA)
+|_  256 51:8e:35:02:87:b8:81:45:56:08:e1:01:e5:22:d4:16 (ED25519)
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+|_http-title: HackIT - Home
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Nov 19 17:12:07 2026 -- 1 IP address (1 host up) scanned in 9.39 seconds
