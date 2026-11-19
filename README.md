@@ -25,3 +25,5 @@ sudo openvpn <my_profile_name>.ovpn
 ```
 
 This creates a virtual network interface inside Linux called `tun0`. Because the VPN runs natively inside Linux, hacking tools like `nmap` or `netcat` can send packets directly to the TryHackMe sandbox without any cross-OS errors.
+
+### 3. Running Firefox as browser
